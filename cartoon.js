@@ -28,8 +28,12 @@ getCartoonLocation(reqUrl);
 
 function getCartoonLocation(url) {
   http.get(url, function(res) {
-    console.log(res.headers.location);
-    getCartoonData(res.headers.location);
+    var location = res.headers.location;
+    if (location) {
+      getCartoonData(location);
+    } else {
+      console.log('ERROR: Could not find location header');
+    }
   }).on('error', function(e) {
     console.log("Got error: " + e.message);
   });
