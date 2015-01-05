@@ -15,3 +15,16 @@ Example: http://www.dagbladet.no/tegneserie/pondusarkiv/serveconfig.php?date=142
 In my opinion this isn't all that important as long as they are in the correct order. To make it easy to understan I propose a simple date as the filename in the first iteration of this cartoon fetch script.
 
 Example: 2015.01.15.png
+
+## Current status
+It is now possible to download today's cartoons from dagbladet.no by running 'node cartoon.js lunch'. I was able to fetch the following cartoons with their respective argument for the script:
+* Lunch (lunch)
+* Kellermannen (kellermannen)
+* Nemi (nemi)
+* Pondus (pondus)
+* Rocky (rocky)
+* Zelda (zelda)
+* Gjesteserie Postapokalyptisk (gjesteserie/postapokalyptisk)
+
+Currently not working:
+* Fagprat
