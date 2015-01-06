@@ -1,6 +1,7 @@
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 
 var SCRIPTURL = 'http://www.dagbladet.no/tegneserie/pondusarkiv/serveconfig.php?';
 var STRIPROOT = './strips/';
@@ -43,62 +44,18 @@ function getCartoonData(rawUrl) {
   var urlObj = url.parse(rawUrl);
   console.log(urlObj);
   http.get(urlObj, function(res) {
-    fs.exists(STRIPROOT, function(exists) {
-      if (exists) {
-        checkIsGuest(res);
-      } else {
-        fs.mkdir(STRIPROOT, function() {
-          checkIsGuest(res);
-        });
-      }
-    });
+    if (isGuestSeries) {
+      mkdirp(GUESTFOLDER+STRIPNAME, function() {
+        writeData(res, GUESTFOLDER+STRIPNAME);
+      });
+    } else {
+      mkdirp(STRIPROOT+STRIPNAME, function() {
+        writeData(res, STRIPROOT+STRIP);
+      });
+    }
   }).on('error', function(e) {
     console.log("Got error: " + e.message);
   });
-}
-
-function checkIsGuest(res) {
-  if (!isGuestSeries) {
-    checkStripFolder(res);
-  } else {
-    checkStripFolder(res, true);
-  }
-}
-
-function checkStripFolder(res, isGuest, guestCreated) {
-  if (!isGuest) {
-    fs.exists(STRIPROOT+STRIP, function(exists) {
-      if (exists) {
-        writeData(res, STRIPROOT+STRIP);
-      } else {
-        fs.mkdir(STRIPROOT+STRIP, function() {
-          writeData(res, STRIPROOT+STRIP);
-        });
-      }
-    });
-  } else {
-    if (!guestCreated) {
-      fs.exists(GUESTFOLDER, function(exists) {
-        if (exists) {
-          checkStripFolder(res, true, true);
-        } else {
-          fs.mkdir(GUESTFOLDER, function() {
-            checkStripFolder(res, true, true);
-          });
-        }
-      });
-    } else {
-      fs.exists(GUESTFOLDER+STRIPNAME, function(exists) {
-        if (exists) {
-          writeData(res, GUESTFOLDER+STRIPNAME);
-        } else {
-          fs.mkdir(GUESTFOLDER+STRIPNAME, function() {
-            writeData(res, GUESTFOLDER+STRIPNAME);
-          });
-        }
-      });
-    }
-  }
 }
 
 function writeData(res, filepath) {
