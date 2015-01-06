@@ -1,3 +1,4 @@
+/node_modules/*
 /strips/*
 cartoon-service.sublime-project
 cartoon-service.sublime-workspace
